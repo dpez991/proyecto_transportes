@@ -1,36 +1,32 @@
 <?php
-/**
- * PHP Version 7.2
- *
- * @category Public
- * @package  Controllers
- * @author   Orlando J Betancourth <orlando.betancourth@gmail.com>
- * @license  MIT http://
- * @version  CVS:1.0.0
- * @link     http://
- */
+
 namespace Controllers;
 
-/**
- * Index Controller
- *
- * @category Public
- * @package  Controllers
- * @author   Orlando J Betancourth <orlando.betancourth@gmail.com>
- * @license  MIT http://
- * @link     http://
- */
+use Utilities\Security;
+
 class Index extends PublicController
 {
-    /**
-     * Index run method
-     *
-     * @return void
-     */
-    public function run() :void
+    public function run(): void
     {
-        $viewData = array();
-        \Views\Renderer::render("index", $viewData);
+        $viewData = [];
+
+        if (Security::isLogged()) {
+            $userId = Security::getUserId();
+            $user = Security::getUser();
+
+            $userName = $user['userName'];
+
+            if (Security::isInRol($userId, 'admin')) {
+                $viewData['mensaje'] = 'Bienvenido ADMIN: '.$userName;
+            } elseif (Security::isInRol($userId, 'cliente')) {
+                $viewData['mensaje'] = 'Bienvenido CLIENTE: '.$userName;
+            } else {
+                $viewData['mensaje'] = 'Bienvenido: '.$userName;
+            }
+        } else {
+            $viewData['mensaje'] = 'Bienvenido a Rutas del Pacífico';
+        }
+
+        \Views\Renderer::render('index', $viewData);
     }
 }
-?>

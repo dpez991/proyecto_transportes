@@ -14,6 +14,14 @@
   {{foreach BeginScripts}}
     <script src="{{~BASE_DIR}}/{{this}}"></script>
   {{endfor BeginScripts}}
+  <style>
+    .btn,
+    .btn-secondary,
+    a.btn-secondary {
+        border-radius: 4px !important;
+        display: inline-block !important;
+    }
+  </style>
 </head>
 <body>
   <header>

@@ -21,6 +21,16 @@
       "id":"Menu_Mantenimiento_Libros",
       "nav_url": "index.php?page=Mantenimientos_Libros_Listado",
       "nav_label": "Mantenimiento de Libros"
+    },
+    {
+      "id":"Menu_Mantenimiento_Usuarios",
+      "nav_url": "index.php?page=Mantenimientos_Usuarios_Listado",
+      "nav_label": "Mantenimiento de Usuarios"
+    },
+    {
+      "id":"Menu_Mantenimiento_Roles",
+      "nav_url": "index.php?page=Mantenimientos_Roles_Listado",
+      "nav_label": "Mantenimiento de Roles"
     }
   ]
 }

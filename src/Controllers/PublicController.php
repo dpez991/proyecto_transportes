@@ -28,7 +28,7 @@ abstract class PublicController implements IController
      */
     public function __construct()
     {
-        $this->name = get_class($this);
+        $this->name = str_replace("\\", "_", str_replace("Controllers\\", "", get_class($this)));
         \Utilities\Nav::setPublicNavContext();
         if (\Utilities\Security::isLogged()){
             $layoutFile = \Utilities\Context::getContextByKey("PRIVATE_LAYOUT");

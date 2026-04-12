@@ -3,29 +3,32 @@
 namespace Dao;
 
 /**
- * Clase base para todos los modelos de datos
+ * Clase base para todos los modelos de datos.
  */
 abstract class Table
 {
-    private static $_conn = null;
+    private static $_conn;
+
     protected static function getConn()
     {
         if (self::$_conn == null) {
             self::$_conn = Dao::getConn();
         }
+
         return self::$_conn;
     }
-    private static $_bindMapping = array(
-        "boolean" => \PDO::PARAM_BOOL,
-        "integer" => \PDO::PARAM_INT,
-        "double"  => \PDO::PARAM_STR,
-        "string" => \PDO::PARAM_STR,
-        "array" => \PDO::PARAM_STR,
-        "object" => \PDO::PARAM_STR,
-        "resource" => \PDO::PARAM_STR,
-        "NULL" => \PDO::PARAM_NULL,
-        "unknown type" => \PDO::PARAM_STR
-    );
+    private static $_bindMapping = [
+        'boolean' => \PDO::PARAM_BOOL,
+        'integer' => \PDO::PARAM_INT,
+        'double' => \PDO::PARAM_STR,
+        'string' => \PDO::PARAM_STR,
+        'array' => \PDO::PARAM_STR,
+        'object' => \PDO::PARAM_STR,
+        'resource' => \PDO::PARAM_STR,
+        'NULL' => \PDO::PARAM_NULL,
+        'unknown type' => \PDO::PARAM_STR,
+    ];
+
     protected static function getBindType($value)
     {
         $valueType = gettype($value);
@@ -52,7 +55,6 @@ abstract class Table
         PDO::PARAM_STR (integer)
         Representa el tipo de dato CHAR, VARCHAR de SQL, u otro tipo de datos de cadena.
          */
-
     }
 
     protected static function obtenerRegistros($sqlstr, $params, &$conn = null)
@@ -64,11 +66,12 @@ abstract class Table
             $pConn = self::getConn();
         }
         $query = $pConn->prepare($sqlstr);
-        foreach ($params as $key=>&$value) {
-            $query->bindParam(":".$key, $value, self::getBindType($value));
+        foreach ($params as $key => &$value) {
+            $query->bindParam(':'.$key, $value, self::getBindType($value));
         }
         $query->execute();
         $query->setFetchMode(\PDO::FETCH_ASSOC);
+
         return $query->fetchAll();
     }
 
@@ -82,7 +85,7 @@ abstract class Table
         }
         $query = $pConn->prepare($sqlstr);
         foreach ($params as $key => &$value) {
-            $query->bindParam(":" . $key, $value, self::getBindType($value));
+            $query->bindParam(':'.$key, $value, self::getBindType($value));
         }
         $query->execute();
         $query->setFetchMode(\PDO::FETCH_ASSOC);
@@ -90,7 +93,7 @@ abstract class Table
         return $query->fetch();
     }
 
-    protected static function executeNonQuery($sqlstr, $params,  &$conn = null)
+    protected static function executeNonQuery($sqlstr, $params, &$conn = null)
     {
         $pConn = null;
         if ($conn != null) {
@@ -100,8 +103,9 @@ abstract class Table
         }
         $query = $pConn->prepare($sqlstr);
         foreach ($params as $key => &$value) {
-            $query->bindParam(":" . $key, $value, self::getBindType($value));
+            $query->bindParam(':'.$key, $value, self::getBindType($value));
         }
+
         return $query->execute();
     }
 
@@ -114,11 +118,10 @@ abstract class Table
                     $newData[$itemKey] = $itemVal;
                 }
             }
+
             return $newData;
         } else {
-            return array();
+            return [];
         }
     }
 }
-
-?>
