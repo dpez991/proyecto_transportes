@@ -17,7 +17,7 @@ SET FOREIGN_KEY_CHECKS = 1;
 
 CREATE TABLE usuario (
     usercod bigint AUTO_INCREMENT PRIMARY KEY,
-    useremail varchar(80),
+    useremail varchar(80) UNIQUE,
     username varchar(80),
     userpswd varchar(128),
     userfching datetime,
@@ -26,8 +26,7 @@ CREATE TABLE usuario (
     userest char(3),
     useractcod varchar(128),
     userpswdchg varchar(128),
-    usertipo char(3),
-    UNIQUE KEY useremail_UNIQUE (useremail)
+    usertipo char(3)
 );
 
 CREATE TABLE roles (
@@ -75,43 +74,55 @@ CREATE TABLE bitacora (
 );
 
 -- ========================
--- DATOS BASE
+-- ROLES BASE
 -- ========================
 
-INSERT INTO roles VALUES
-('admin', 'Administrador', 'ACT'),
-('cliente', 'Cliente', 'ACT');
+INSERT INTO roles (rolescod, rolesdsc, rolesest) VALUES
+('admin', 'Administrador del sistema', 'ACT'),
+('cliente', 'Cliente del sistema', 'ACT');
 
-INSERT INTO funciones VALUES
-('Menu_Mantenimiento_Usuarios', 'Menu Usuarios', 'ACT', 'MNU'),
+-- ========================
+-- FUNCIONES (SEGÚN TU SISTEMA ACTUAL)
+-- ========================
+
+INSERT INTO funciones (fncod, fndsc, fnest, fntyp) VALUES
+
+-- MENÚS
+('Menu_Mantenimiento_Usuarios', 'Menu_Mantenimiento_Usuarios', 'ACT', 'MNU'),
+('Menu_Mantenimiento_Roles', 'Menu_Mantenimiento_Roles', 'ACT', 'MNU'),
+('Menu_PaymentCheckout', 'Menu_PaymentCheckout', 'ACT', 'MNU'),
+
+-- USUARIOS
 ('Mantenimientos_Usuarios_Listado', 'Listado Usuarios', 'ACT', 'CTR'),
 ('Mantenimientos_Usuarios_Formulario', 'Formulario Usuarios', 'ACT', 'CTR'),
+('Mantenimientos_Usuarios_Usuario', 'CRUD Usuarios', 'ACT', 'PRG'),
 
-('Menu_Mantenimiento_Roles', 'Menu Roles', 'ACT', 'MNU'),
+-- ROLES
 ('Mantenimientos_Roles_Listado', 'Listado Roles', 'ACT', 'CTR'),
-('Mantenimientos_Roles_Formulario', 'Formulario Roles', 'ACT', 'CTR');
+('Mantenimientos_Roles_Formulario', 'Formulario Roles', 'ACT', 'CTR'),
+('Mantenimientos_Roles_Rol', 'CRUD Roles', 'ACT', 'PRG');
+
+-- ========================
+-- ASIGNAR TODO AL ADMIN
+-- ========================
 
 INSERT INTO funciones_roles (rolescod, fncod, fnrolest, fnexp)
 SELECT 'admin', fncod, 'ACT', '2030-01-01'
 FROM funciones;
 
--- USUARIO ADMIN (opcional)
-INSERT INTO usuario (useremail, username, userpswd, userfching, userest, usertipo)
-VALUES ('admin@admin.com', 'Admin', '123', NOW(), 'ACT', 'ADM');
+-- ========================
+-- NOTA IMPORTANTE USUARIOS
+-- ========================
 
-INSERT INTO roles_usuarios VALUES
-(1, 'admin', 'ACT', NOW(), '2030-01-01');
+-- ⚠️ NO insertar usuarios manualmente
+-- porque las contraseñas están encriptadas
 
-INSERT INTO funciones (fncod, fndsc, fnest, fntyp) VALUES
-('Mantenimientos_Usuarios_Usuario', 'CRUD Usuarios', 'ACT', 'PRG'),
-('Mantenimientos_Roles_Rol', 'CRUD Roles', 'ACT', 'PRG');
+-- ✔ CREAR USUARIOS DESDE REGISTER
+-- ✔ Automáticamente se asigna el rol 'cliente'
 
-INSERT INTO funciones_roles (rolescod, fncod, fnrolest, fnexp)
-VALUES
-('admin', 'Mantenimientos_Usuarios_Usuario', 'ACT', '2030-01-01'),
-('admin', 'Mantenimientos_Roles_Rol', 'ACT', '2030-01-01')
-ON DUPLICATE KEY UPDATE fnrolest='ACT';
+-- ========================
+-- EJEMPLO DE LO QUE PASA INTERNAMENTE (NO EJECUTAR)
+-- ========================
 
-INSERT INTO funciones (fncod, fndsc, fnest, fntyp)
-VALUES ('Mantenimientos_Usuarios_Formulario', 'Gestión Roles Usuario', 'ACT', 'PRG')
-ON DUPLICATE KEY UPDATE fnest='ACT';
+-- INSERT INTO usuario (...)
+-- INSERT INTO roles_usuarios (usercod, 'cliente', 'ACT', NOW(), ...)
