@@ -45,22 +45,10 @@ class Security {
     }
     public static function isAuthorized($userId, $function, $type = 'FNC'):bool
     {
-        if (\Utilities\Context::getContextByKey("DEVELOPMENT") == "1") {
-            $functionInDb = DaoSecurity::getFeature($function);
-            if (!$functionInDb) {
-                DaoSecurity::addNewFeature($function, $function, "ACT", $type);
-            }
-        }
         return DaoSecurity::getFeatureByUsuario($userId, $function);
     }
     public static function isInRol($userId, $rol):bool
     {
-        if (\Utilities\Context::getContextByKey("DEVELOPMENT") == "1") {
-            $rolInDb = DaoSecurity::getRol($rol);
-            if (!$rolInDb) {
-                DaoSecurity::addNewRol($rol, $rol, "ACT");
-            }
-        }
         return DaoSecurity::isUsuarioInRol($userId, $rol);
     }
 }
