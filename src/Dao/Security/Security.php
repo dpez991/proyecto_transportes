@@ -3,9 +3,9 @@
 namespace Dao\Security;
 
 if (version_compare(phpversion(), '7.4.0', '<')) {
-    define('PASSWORD_ALGORITHM', 1);  // BCRYPT
+    define('PASSWORD_ALGORITHM', 1);
 } else {
-    define('PASSWORD_ALGORITHM', '2y');  // BCRYPT
+    define('PASSWORD_ALGORITHM', '2y');
 }
 
 class Security extends \Dao\Table

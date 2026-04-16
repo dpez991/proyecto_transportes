@@ -11,23 +11,15 @@ class Historial extends PrivateController
 {
     public function run(): void
     {
-        // 1. Obtener ID del usuario logueado
         $usercod = Security::getUserId();
 
-        // 2. Traer su historial de la base de datos
         $comprasDB = CompraDAO::obtenerHistorialUsuario($usercod);
 
-        // 🔥 DEBUG (si querés probar, descomenta esto)
-        // var_dump($comprasDB);
-        // die();
-
-        // 3. Agrupar la información por ID de compra
         $comprasAgrupadas = [];
 
         foreach ($comprasDB as $row) {
             $compraId = $row['compra_id'];
 
-            // Crear estructura base si no existe
             if (!isset($comprasAgrupadas[$compraId])) {
                 $comprasAgrupadas[$compraId] = [
                     'compra_id' => $compraId,
@@ -41,7 +33,6 @@ class Historial extends PrivateController
                 ];
             }
 
-            // 🔥 SOLO agregar detalle si existe (evita NULL)
             if (isset($row['cantidad'])) {
                 $comprasAgrupadas[$compraId]['detalles'][] = [
                     'origen' => $row['origen'] ?? 'N/A',
@@ -59,7 +50,6 @@ class Historial extends PrivateController
             }
         }
 
-        // 4. Enviar a la vista
         $viewData = [
             'hasCompras' => count($comprasAgrupadas),
             'compras' => array_values($comprasAgrupadas),

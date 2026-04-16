@@ -88,7 +88,6 @@
     margin-bottom: 20px;
 }
 
-/* 🔥 CAROUSEL */
 .carousel {
     width: 100%;
     height: 100%;
@@ -115,7 +114,6 @@
 }
 .prev { left: 10px; }
 .next { right: 10px; }
-/* igual que el tuyo + pequeño ajuste */
 .badge-disponible {
     background: #e8f5e9;
     color: #43a047;
@@ -151,12 +149,10 @@
             <div class="trip-meta">
                 <div class="trip-meta-item">⏰ {{hora}}</div>
 
-                <!-- 🔥 NUEVO SELECTOR DE FECHA -->
                 <div class="trip-meta-item">
                     📅 <input type="date" id="fecha" class="form-control">
                 </div>
 
-                <!-- 🔥 DINÁMICO -->
                 <div class="trip-meta-item">
                     <span id="asientosBox" class="badge-disponible">
                         Selecciona una fecha
@@ -165,7 +161,6 @@
             </div>
 
             <div class="booking-section">
-                <!-- 🔥 FORMULARIO AGREGAR AL CARRITO -->
                 <form action="index.php?page=Checkout_Add" method="POST">
                     <input type="hidden" name="horario_id" value="{{horario_id}}">
                     <input type="hidden" id="fecha_hidden" name="fecha" value="">

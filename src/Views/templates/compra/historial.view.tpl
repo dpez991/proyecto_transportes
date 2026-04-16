@@ -78,7 +78,6 @@
         border-top: 1px solid #eee;
     }
 
-    /* ===== ESTADO VACÍO (NUEVO) ===== */
     .empty-state {
         text-align: center;
         padding: 80px 20px;

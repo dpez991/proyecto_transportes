@@ -28,7 +28,6 @@ class Accept extends PrivateController
                 if (isset($response->status) && $response->status === 'COMPLETED') {
                     $compraId = Cart::procesarCompra($usercod);
                     if ($compraId) {
-                        // Default fallback values
                         \Dao\CompraDAO::marcarComoPagado($compraId);
                         $payerName = ($response->payer->name->given_name ?? '').' '.($response->payer->name->surname ?? '');
                         $payerEmail = $response->payer->email_address ?? '';
@@ -39,7 +38,6 @@ class Accept extends PrivateController
                         $direccion = '';
                         $captureId = '';
 
-                        // Extracts amounts and capture id
                         if (isset($response->purchase_units[0])) {
                             $unit = $response->purchase_units[0];
                             if (isset($unit->payments->captures[0])) {
@@ -53,7 +51,6 @@ class Accept extends PrivateController
                             }
                         }
 
-                        // Save the payment
                         PagosDAO::insertarPago(
                             $compraId,
                             trim('PAYPAL'),

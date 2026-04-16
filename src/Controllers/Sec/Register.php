@@ -3,51 +3,48 @@
 namespace Controllers\Sec;
 
 use Controllers\PublicController;
-use \Utilities\Validators;
-use Exception;
+use Utilities\Validators;
 
 class Register extends PublicController
 {
-    private $txtUsername = "";
-    private $txtEmail = "";
-    private $txtPswd = "";
-    private $errorUsername = "";
-    private $errorEmail ="";
-    private $errorPswd = "";
+    private $txtUsername = '';
+    private $txtEmail = '';
+    private $txtPswd = '';
+    private $errorUsername = '';
+    private $errorEmail = '';
+    private $errorPswd = '';
     private $hasErrors = false;
-    public function run() :void
-    {
 
+    public function run(): void
+    {
         if ($this->isPostBack()) {
-            $this->txtEmail = $_POST["txtEmail"];
-            $this->txtPswd = $_POST["txtPswd"];
-            $this->txtUsername = $_POST["txtUsername"] ?? '';
-            //validaciones
+            $this->txtEmail = $_POST['txtEmail'];
+            $this->txtPswd = $_POST['txtPswd'];
+            $this->txtUsername = $_POST['txtUsername'] ?? '';
             if (empty($this->txtUsername)) {
-                $this->errorUsername = "El nombre de usuario es obligatorio";
+                $this->errorUsername = 'El nombre de usuario es obligatorio';
                 $this->hasErrors = true;
             }
-            if (!(Validators::IsValidEmail($this->txtEmail))) {
-                $this->errorEmail = "El correo no tiene el formato adecuado";
+            if (!Validators::IsValidEmail($this->txtEmail)) {
+                $this->errorEmail = 'El correo no tiene el formato adecuado';
                 $this->hasErrors = true;
             }
             if (!Validators::IsValidPassword($this->txtPswd)) {
-                $this->errorPswd = "La contraseña debe tener al menos 8 caracteres una mayúscula, un número y un caracter especial.";
+                $this->errorPswd = 'La contraseña debe tener al menos 8 caracteres una mayúscula, un número y un caracter especial.';
                 $this->hasErrors = true;
             }
 
             if (!$this->hasErrors) {
-                try{
+                try {
                     if (\Dao\Security\Security::newUsuario($this->txtEmail, $this->txtPswd, $this->txtUsername)) {
-                        \Utilities\Site::redirectToWithMsg("index.php?page=sec_login", "¡Usuario Registrado Satisfactoriamente!");
+                        \Utilities\Site::redirectToWithMsg('index.php?page=sec_login', '¡Usuario Registrado Satisfactoriamente!');
                     }
-                } catch (Exception $ex){
-                    die($ex);
+                } catch (\Exception $ex) {
+                    exit($ex);
                 }
             }
         }
         $viewData = get_object_vars($this);
-        \Views\Renderer::render("security/sigin", $viewData);
+        \Views\Renderer::render('security/sigin', $viewData);
     }
 }
-?>

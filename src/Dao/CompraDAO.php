@@ -4,7 +4,6 @@ namespace Dao;
 
 class CompraDAO extends Table
 {
-    // Historial para el cliente
     public static function obtenerHistorialUsuario($usercod)
     {
         $sql = "SELECT 
@@ -47,7 +46,6 @@ class CompraDAO extends Table
         return self::obtenerRegistros($sql, ['usercod' => $usercod]);
     }
 
-    // Listado global para el administrador
     public static function obtenerTodasLasCompras()
     {
         $sql = 'SELECT 

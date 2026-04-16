@@ -55,7 +55,6 @@ table.admin-table tr:hover {
 .pill-completed { background: #d4edda; color: #155724; }
 .pill-pending { background: #fff3cd; color: #856404; }
 
-/* 🔥 BOTÓN */
 .btn-detalle {
     background: #007bff;
     color: #fff;
@@ -87,7 +86,7 @@ table.admin-table tr:hover {
                     <th>Pago</th>
                     <th>Total</th>
                     <th>Transacción</th>
-                    <th>Acciones</th> <!-- 🔥 NUEVO -->
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -109,7 +108,6 @@ table.admin-table tr:hover {
                         {{transaccion_id}}
                     </td>
 
-                    <!-- 🔥 BOTÓN DETALLE -->
                     <td>
                         <a href="index.php?page=Mantenimientos_Compras_Detalle&id={{compra_id}}" class="btn-detalle">
                             <i class="fas fa-eye"></i> Ver

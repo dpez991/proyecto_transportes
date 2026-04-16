@@ -23,7 +23,6 @@ class Detalle extends PrivateController
             Site::redirectToWithMsg('index.php?page=Mantenimientos_Compras_Listado', 'No se encontró la compra');
         }
 
-        // 🔥 Agrupar detalles
         $compra = [
             'compra_id' => $rows[0]['compra_id'],
             'fecha_compra' => $rows[0]['fecha_compra'],

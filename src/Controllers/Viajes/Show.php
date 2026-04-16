@@ -10,7 +10,6 @@ class Show extends PublicController
 {
     public function run(): void
     {
-        // 🔥 AJAX
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $horario_id = $_POST['horario_id'] ?? 0;
             $fecha = $_POST['fecha'] ?? '';
@@ -27,7 +26,6 @@ class Show extends PublicController
                 exit;
             }
 
-            // ❌ YA NO CREAMOS NADA
             $viaje = Viajes::obtenerViajePorHorarioYFecha($horario_id, $fecha);
 
             echo json_encode([
@@ -38,7 +36,6 @@ class Show extends PublicController
             exit;
         }
 
-        // 🔥 NORMAL
         $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
         if ($id === 0) {

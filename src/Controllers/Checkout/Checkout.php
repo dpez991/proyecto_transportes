@@ -20,7 +20,6 @@ class Checkout extends PrivateController
             $item['subtotal'] = $item['cantidad'] * $item['precio_unitario'];
             $total += $item['subtotal'];
 
-            // 🔥 FIX DEL SELECT (CLAVE)
             $item['sel_normal'] = ($item['tipo_asiento'] === 'Normal') ? 'selected' : '';
             $item['sel_semi'] = ($item['tipo_asiento'] === 'Semi cama') ? 'selected' : '';
             $item['sel_cama'] = ($item['tipo_asiento'] === 'Cama') ? 'selected' : '';

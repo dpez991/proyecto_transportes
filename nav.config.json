@@ -27,6 +27,11 @@
     }
   ],
   "private": [
+      {
+  "id": "Menu_Compra_Historial",
+  "nav_url": "index.php?page=Compra_Historial",
+  "nav_label": "<i class=\"fas fa-receipt\"></i>&nbsp;Mis Compras"
+},
   {
     "id": "Menu_Admin_Dashboard",
     "nav_url": "index.php?page=Admin_Dashboard",
@@ -61,11 +66,6 @@
     "id":"Menu_Mantenimiento_Roles",
     "nav_url": "index.php?page=Mantenimientos_Roles_Listado",
     "nav_label": "Mantenimiento de Roles"
-  },
-  {
-  "id": "Menu_Compra_Historial",
-  "nav_url": "index.php?page=Compra_Historial",
-  "nav_label": "<i class=\"fas fa-receipt\"></i>&nbsp;Mis Compras"
-}
+  }
   ]
 }

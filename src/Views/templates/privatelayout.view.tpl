@@ -91,7 +91,6 @@
       background-color: #0074D9;
     }
 
-    /* ===== FOOTER PRO EMPRESA ===== */
     footer {
       background: linear-gradient(90deg, #001f3f, #003366);
       color: #fff;
@@ -171,10 +170,13 @@
     </a>
 
     {{with login}}
-    <span style="display: flex; align-items: center; gap: 8px; color: white; font-weight: bold;">
-        <i class="fas fa-user" style="font-size: 18px;"></i>
-        <span class="user-name">{{userName}}</span>
-    </span>
+<a href="index.php?page=Private_MiPerfil" 
+   style="display: flex; align-items: center; gap: 8px; color: white; font-weight: bold; text-decoration: none;">
+    
+    <i class="fas fa-user" style="font-size: 18px;"></i>
+    <span class="user-name">{{userName}}</span>
+
+</a>
     {{endwith login}}
 </div>
 

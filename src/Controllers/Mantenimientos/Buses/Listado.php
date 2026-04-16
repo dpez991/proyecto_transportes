@@ -3,21 +3,20 @@
 namespace Controllers\Mantenimientos\Buses;
 
 use Controllers\PrivateController;
-use Views\Renderer;
 use Dao\BusDAO;
-
-const LIST_VIEW_TEMPLATE = "mantenimientos/buses/listado";
+use Views\Renderer;
 
 class Listado extends PrivateController
 {
     public function run(): void
     {
-        Renderer::render(LIST_VIEW_TEMPLATE, [
-            "buses" => BusDAO::getAll(),
-            "showNew" => $this->isFeatureAutorized("Mantenimientos_Buses_Bus"),
-            "showEdit" => $this->isFeatureAutorized("Mantenimientos_Buses_Bus"),
-            "showDel" => $this->isFeatureAutorized("Mantenimientos_Buses_Bus"),
-            "showView" => true
-        ]);
+        $buses = BusDAO::getAll();
+
+        $viewData = [
+            'hasBuses' => count($buses) > 0,
+            'buses' => $buses,
+        ];
+
+        Renderer::render('mantenimientos/buses/listado', $viewData);
     }
 }

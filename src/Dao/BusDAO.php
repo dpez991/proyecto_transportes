@@ -6,48 +6,65 @@ class BusDAO extends Table
 {
     public static function getAll()
     {
-        $sqlstr = "SELECT * FROM buses;";
-        return self::obtenerRegistros($sqlstr, []);
+        $sql = "SELECT 
+                    id as busId,
+                    codigo_bus,
+                    capacidad,
+                    CASE 
+                        WHEN estado = 1 THEN 'ACTIVO'
+                        ELSE 'INACTIVO'
+                    END as estado
+                FROM buses
+                ORDER BY id DESC;";
+
+        return self::obtenerRegistros($sql, []);
     }
 
-    public static function getById($busId)
+    public static function getById($id)
     {
-        $sqlstr = "SELECT * FROM buses WHERE busId = :busId;";
-        return self::obtenerUnRegistro($sqlstr, ["busId" => $busId]);
+        $sql = 'SELECT 
+                    id as busId,
+                    codigo_bus,
+                    capacidad,
+                    estado
+                FROM buses
+                WHERE id = :id;';
+
+        return self::obtenerUnRegistro($sql, ['id' => $id]);
     }
 
-    public static function insert($numeroBus, $placa, $capacidad = 45, $busest = "ACT")
+    public static function insert($codigo_bus, $capacidad, $estado)
     {
-        $sqlstr = "INSERT INTO buses (numeroBus, placa, capacidad, busest)
-                   VALUES (:numeroBus, :placa, :capacidad, :busest);";
-        return self::executeNonQuery($sqlstr, [
-            "numeroBus" => $numeroBus,
-            "placa" => $placa,
-            "capacidad" => $capacidad,
-            "busest" => $busest
+        $sql = 'INSERT INTO buses (codigo_bus, capacidad, estado)
+                VALUES (:codigo_bus, :capacidad, :estado);';
+
+        return self::executeNonQuery($sql, [
+            'codigo_bus' => $codigo_bus,
+            'capacidad' => $capacidad,
+            'estado' => $estado === 'ACT' ? 1 : 0,
         ]);
     }
 
-    public static function update($busId, $numeroBus, $placa, $capacidad, $busest)
+    public static function update($id, $codigo_bus, $capacidad, $estado)
     {
-        $sqlstr = "UPDATE buses
-                   SET numeroBus = :numeroBus,
-                       placa = :placa,
-                       capacidad = :capacidad,
-                       busest = :busest
-                   WHERE busId = :busId;";
-        return self::executeNonQuery($sqlstr, [
-            "busId" => $busId,
-            "numeroBus" => $numeroBus,
-            "placa" => $placa,
-            "capacidad" => $capacidad,
-            "busest" => $busest
+        $sql = 'UPDATE buses
+                SET codigo_bus = :codigo_bus,
+                    capacidad = :capacidad,
+                    estado = :estado
+                WHERE id = :id;';
+
+        return self::executeNonQuery($sql, [
+            'id' => $id,
+            'codigo_bus' => $codigo_bus,
+            'capacidad' => $capacidad,
+            'estado' => $estado === 'ACT' ? 1 : 0,
         ]);
     }
 
-    public static function delete($busId)
+    public static function inactivate($id)
     {
-        $sqlstr = "DELETE FROM buses WHERE busId = :busId;";
-        return self::executeNonQuery($sqlstr, ["busId" => $busId]);
+        $sql = 'UPDATE buses SET estado = 0 WHERE id = :id;';
+
+        return self::executeNonQuery($sql, ['id' => $id]);
     }
 }

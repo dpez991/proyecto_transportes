@@ -88,7 +88,6 @@
       background-color: #0074D9; 
     }
 
-    /* ===== FOOTER PRO EMPRESA ===== */
     footer {
       background: linear-gradient(90deg, #001f3f, #003366);
       color: #fff;

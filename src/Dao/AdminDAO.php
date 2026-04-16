@@ -6,18 +6,27 @@ class AdminDAO extends Table
 {
     public static function getDashboardResume()
     {
-        $sqlUsuarios = "SELECT COUNT(*) AS totalUsuarios FROM usuario;";
-        $sqlViajes = "SELECT COUNT(*) AS totalViajes FROM viajes;";
-        $sqlCompras = "SELECT COUNT(*) AS totalCompras FROM compras;";
+        $sql = "
+            SELECT 
+                (SELECT COUNT(*) FROM usuario) AS totalUsuarios,
+                (SELECT COUNT(*) FROM viajes) AS totalViajes,
+                (SELECT COUNT(*) FROM compras) AS totalCompras,
+                (SELECT COUNT(*) FROM rutas) AS totalRutas,
+                (SELECT COUNT(*) FROM buses) AS totalBuses,
 
-        $usuarios = self::obtenerUnRegistro($sqlUsuarios, []);
-        $viajes = self::obtenerUnRegistro($sqlViajes, []);
-        $compras = self::obtenerUnRegistro($sqlCompras, []);
+                (SELECT IFNULL(SUM(total),0) 
+                 FROM compras 
+                 WHERE estado = 'pagado') AS ingresosTotales,
 
-        return [
-            "totalUsuarios" => $usuarios["totalUsuarios"] ?? 0,
-            "totalViajes" => $viajes["totalViajes"] ?? 0,
-            "totalCompras" => $compras["totalCompras"] ?? 0
-        ];
+                (SELECT COUNT(*) 
+                 FROM compras 
+                 WHERE DATE(fecha) = CURDATE()) AS comprasHoy,
+
+                (SELECT COUNT(*) 
+                 FROM viajes 
+                 WHERE fecha = CURDATE()) AS viajesHoy
+        ";
+
+        return self::obtenerUnRegistro($sql, []);
     }
 }

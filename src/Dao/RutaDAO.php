@@ -6,45 +6,67 @@ class RutaDAO extends Table
 {
     public static function getAll()
     {
-        $sqlstr = "SELECT * FROM rutas;";
-        return self::obtenerRegistros($sqlstr, []);
+        $sql = "SELECT 
+                    id as rutaId,
+                    origen,
+                    destino,
+                    CASE 
+                        WHEN estado = 1 THEN 'ACTIVO'
+                        ELSE 'INACTIVO'
+                    END as estado
+                FROM rutas
+                ORDER BY id DESC;";
+
+        return self::obtenerRegistros($sql, []);
     }
 
-    public static function getById($rutaId)
+    public static function getById($id)
     {
-        $sqlstr = "SELECT * FROM rutas WHERE rutaId = :rutaId;";
-        return self::obtenerUnRegistro($sqlstr, ["rutaId" => $rutaId]);
+        $sql = 'SELECT 
+                    id as rutaId,
+                    origen,
+                    destino,
+                    estado
+                FROM rutas
+                WHERE id = :id;';
+
+        return self::obtenerUnRegistro($sql, ['id' => $id]);
     }
 
-    public static function insert($origen, $destino, $estado = "ACT")
+    public static function insert($origen, $destino, $estado)
     {
-        $sqlstr = "INSERT INTO rutas (origen, destino, estado)
-                   VALUES (:origen, :destino, :estado);";
-        return self::executeNonQuery($sqlstr, [
-            "origen" => $origen,
-            "destino" => $destino,
-            "estado" => $estado
+        $sql = 'INSERT INTO rutas (origen, destino, estado)
+                VALUES (:origen, :destino, :estado);';
+
+        return self::executeNonQuery($sql, [
+            'origen' => $origen,
+            'destino' => $destino,
+            'estado' => $estado === 'ACT' ? 1 : 0,
         ]);
     }
 
-    public static function update($rutaId, $origen, $destino, $estado)
+    public static function update($id, $origen, $destino, $estado)
     {
-        $sqlstr = "UPDATE rutas
-                   SET origen = :origen,
-                       destino = :destino,
-                       estado = :estado
-                   WHERE rutaId = :rutaId;";
-        return self::executeNonQuery($sqlstr, [
-            "rutaId" => $rutaId,
-            "origen" => $origen,
-            "destino" => $destino,
-            "estado" => $estado
+        $sql = 'UPDATE rutas
+                SET origen = :origen,
+                    destino = :destino,
+                    estado = :estado
+                WHERE id = :id;';
+
+        return self::executeNonQuery($sql, [
+            'id' => $id,
+            'origen' => $origen,
+            'destino' => $destino,
+            'estado' => $estado === 'ACT' ? 1 : 0,
         ]);
     }
 
-    public static function delete($rutaId)
+    public static function inactivate($id)
     {
-        $sqlstr = "DELETE FROM rutas WHERE rutaId = :rutaId;";
-        return self::executeNonQuery($sqlstr, ["rutaId" => $rutaId]);
+        $sql = 'UPDATE rutas
+                SET estado = 0
+                WHERE id = :id;';
+
+        return self::executeNonQuery($sql, ['id' => $id]);
     }
 }
