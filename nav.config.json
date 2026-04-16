@@ -53,16 +53,6 @@
     "nav_label": "Gestión de Compras"
   },
   {
-    "id":"Menu_PaymentCheckout",
-    "nav_url": "index.php?page=Checkout_Checkout",
-    "nav_label": "Carretilla de Compra"
-  },
-  {
-    "id":"Menu_Mantenimiento_Libros",
-    "nav_url": "index.php?page=Mantenimientos_Libros_Listado",
-    "nav_label": "Mantenimiento de Libros"
-  },
-  {
     "id":"Menu_Mantenimiento_Usuarios",
     "nav_url": "index.php?page=Mantenimientos_Usuarios_Listado",
     "nav_label": "Mantenimiento de Usuarios"
@@ -71,6 +61,11 @@
     "id":"Menu_Mantenimiento_Roles",
     "nav_url": "index.php?page=Mantenimientos_Roles_Listado",
     "nav_label": "Mantenimiento de Roles"
-  }
+  },
+  {
+  "id": "Menu_Compra_Historial",
+  "nav_url": "index.php?page=Compra_Historial",
+  "nav_label": "<i class=\"fas fa-receipt\"></i>&nbsp;Mis Compras"
+}
   ]
 }

@@ -10,6 +10,35 @@ class Show extends PublicController
 {
     public function run(): void
     {
+        // 🔥 AJAX
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $horario_id = $_POST['horario_id'] ?? 0;
+            $fecha = $_POST['fecha'] ?? '';
+
+            header('Content-Type: application/json');
+
+            $hoy = date('Y-m-d');
+
+            if ($fecha < $hoy) {
+                echo json_encode([
+                    'success' => false,
+                    'asientos' => 0,
+                ]);
+                exit;
+            }
+
+            // ❌ YA NO CREAMOS NADA
+            $viaje = Viajes::obtenerViajePorHorarioYFecha($horario_id, $fecha);
+
+            echo json_encode([
+                'success' => true,
+                'asientos' => $viaje['asientos_disponibles'],
+            ]);
+
+            exit;
+        }
+
+        // 🔥 NORMAL
         $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
         if ($id === 0) {
@@ -24,7 +53,7 @@ class Show extends PublicController
         if (!$viaje) {
             \Utilities\Site::redirectToWithMsg(
                 'index.php?page=Viajes_Index',
-                'El viaje solicitado no existe o no tiene asientos disponibles.'
+                'Viaje no encontrado.'
             );
         }
 
@@ -32,46 +61,35 @@ class Show extends PublicController
 
         function limpiar($txt)
         {
-            $txt = strtolower($txt);
-            $txt = str_replace(
+            return str_replace(
                 ['á', 'é', 'í', 'ó', 'ú', ' '],
                 ['a', 'e', 'i', 'o', 'u', ''],
-                $txt
+                strtolower($txt)
             );
-
-            return $txt;
         }
-
-        $imgOrigen = limpiar($viaje['origen']).'.jpg';
-        $pathOrigen = 'public/imgs/rutas/'.$imgOrigen;
-
-        $imgDestino = limpiar($viaje['destino']).'.jpg';
-        $pathDestino = 'public/imgs/rutas/'.$imgDestino;
 
         $imagenes = [];
 
-        if (file_exists($pathOrigen)) {
-            $imagenes[] = $baseDir.'/'.$pathOrigen;
+        $imgOrigen = 'public/imgs/rutas/'.limpiar($viaje['origen']).'.jpg';
+        $imgDestino = 'public/imgs/rutas/'.limpiar($viaje['destino']).'.jpg';
+
+        if (file_exists($imgOrigen)) {
+            $imagenes[] = $baseDir.'/'.$imgOrigen;
         }
 
-        if (file_exists($pathDestino)) {
-            $imagenes[] = $baseDir.'/'.$pathDestino;
+        if (file_exists($imgDestino)) {
+            $imagenes[] = $baseDir.'/'.$imgDestino;
         }
 
         if (empty($imagenes)) {
-            $imagenes[] = 'https://placehold.co/800x400/001f3f/ffffff?text=Viaje';
+            $imagenes[] = 'https://placehold.co/800x400';
         }
 
-        $viaje['fecha_fmt'] = date('d/m/Y', strtotime($viaje['fecha']));
-        $viaje['hora_fmt'] = date('h:i A', strtotime($viaje['hora']));
-
         $viewData = [
-            'viaje_id' => $viaje['id'],
+            'horario_id' => $viaje['horario_id'],
             'origen' => $viaje['origen'],
             'destino' => $viaje['destino'],
-            'fecha' => $viaje['fecha_fmt'],
-            'hora' => $viaje['hora_fmt'],
-            'asientos_disponibles' => $viaje['asientos_disponibles'],
+            'hora' => date('h:i A', strtotime($viaje['hora'])),
             'imagenes' => $imagenes,
         ];
 

@@ -2,39 +2,85 @@
 
 namespace Controllers\Checkout;
 
-use Controllers\PublicController;
+use Controllers\PrivateController;
+use Dao\Cart\Cart;
+use Utilities\Security;
+use Views\Renderer;
 
-class Checkout extends PublicController
+class Checkout extends PrivateController
 {
     public function run(): void
     {
-        $viewData = array();
+        $usercod = Security::getUserId();
+
+        $items = Cart::obtenerCarrito($usercod);
+        $total = 0;
+
+        foreach ($items as &$item) {
+            $item['subtotal'] = $item['cantidad'] * $item['precio_unitario'];
+            $total += $item['subtotal'];
+
+            // 🔥 FIX DEL SELECT (CLAVE)
+            $item['sel_normal'] = ($item['tipo_asiento'] === 'Normal') ? 'selected' : '';
+            $item['sel_semi'] = ($item['tipo_asiento'] === 'Semi cama') ? 'selected' : '';
+            $item['sel_cama'] = ($item['tipo_asiento'] === 'Cama') ? 'selected' : '';
+        }
+
         if ($this->isPostBack()) {
+            if (empty($items)) {
+                \Utilities\Site::redirectToWithMsg('index.php?page=Checkout_Checkout', 'Tu carrito está vacío.');
+            }
+
+            $baseDir = \Utilities\Context::getContextByKey('BASE_DIR');
+            $scheme = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https' : 'http';
+            $host = $_SERVER['HTTP_HOST'];
+            $baseUrl = $scheme.'://'.$host.$baseDir;
+
+            $errorUrl = $baseUrl.'/index.php?page=Checkout_Error';
+            $acceptUrl = $baseUrl.'/index.php?page=Checkout_Accept';
+
             $PayPalOrder = new \Utilities\Paypal\PayPalOrder(
-                "test" . (time() - 10000000),
-                "http://localhost:8080/mvc202402/index.php?page=Checkout_Error",
-                "http://localhost:8080/mvc202402/index.php?page=Checkout_Accept"
+                'ORD-'.$usercod.'-'.time(),
+                $errorUrl,
+                $acceptUrl
             );
 
-            $PayPalOrder->addItem("Test", "TestItem1", "PRD1", 100, 15, 1, "DIGITAL_GOODS");
-            $PayPalOrder->addItem("Test 2", "TestItem2", "PRD2", 50, 7.5, 2, "DIGITAL_GOODS");
+            foreach ($items as $item) {
+                $PayPalOrder->addItem(
+                    'Boleto '.$item['origen'].' a '.$item['destino'],
+                    $item['origen'].'-'.$item['destino'],
+                    'AS-'.$item['horario_id'],
+                    $item['precio_unitario'],
+                    0,
+                    $item['cantidad'],
+                    'DIGITAL_GOODS'
+                );
+            }
 
             $PayPalRestApi = new \Utilities\PayPal\PayPalRestApi(
-                \Utilities\Context::getContextByKey("PAYPAL_CLIENT_ID"),
-                \Utilities\Context::getContextByKey("PAYPAL_CLIENT_SECRET")
+                \Utilities\Context::getContextByKey('PAYPAL_CLIENT_ID'),
+                \Utilities\Context::getContextByKey('PAYPAL_CLIENT_SECRET')
             );
+
             $PayPalRestApi->getAccessToken();
             $response = $PayPalRestApi->createOrder($PayPalOrder);
 
-            $_SESSION["orderid"] = $response->id;
+            $_SESSION['orderid'] = $response->id;
+
             foreach ($response->links as $link) {
-                if ($link->rel == "approve") {
+                if ($link->rel == 'approve') {
                     \Utilities\Site::redirectTo($link->href);
                 }
             }
-            die();
+            exit;
         }
 
-        \Views\Renderer::render("paypal/checkout", $viewData);
+        $viewData = [
+            'items' => $items,
+            'hasItems' => count($items) > 0,
+            'total' => number_format($total, 2),
+        ];
+
+        Renderer::render('checkout/cart', $viewData);
     }
 }

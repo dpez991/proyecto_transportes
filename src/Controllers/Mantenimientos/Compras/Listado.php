@@ -3,18 +3,20 @@
 namespace Controllers\Mantenimientos\Compras;
 
 use Controllers\PrivateController;
-use Views\Renderer;
 use Dao\CompraDAO;
-
-const LIST_VIEW_TEMPLATE = "mantenimientos/compras/listado";
+use Views\Renderer;
 
 class Listado extends PrivateController
 {
     public function run(): void
     {
-        Renderer::render(LIST_VIEW_TEMPLATE, [
-            "compras" => CompraDAO::getAll(),
-            "showDetail" => $this->isFeatureAutorized("Mantenimientos_Compras_Detalle")
-        ]);
+        $comprasDB = CompraDAO::obtenerTodasLasCompras();
+
+        $viewData = [
+            "hasCompras" => count($comprasDB) > 0,
+            "compras" => $comprasDB
+        ];
+
+        Renderer::render("mantenimientos/compras/listado", $viewData);
     }
 }

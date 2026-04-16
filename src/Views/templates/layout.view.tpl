@@ -149,6 +149,12 @@
     </div>
 
     <div class="header-right">
+      <a href="index.php?page=Checkout_Checkout" style="color:white; text-decoration:none; margin-right: 15px; position:relative;">
+        <i class="fas fa-shopping-cart" style="font-size:1.2rem;"></i>
+        {{if CART_COUNT}}
+        <span style="position:absolute; top:-8px; right:-12px; background:#e74c3c; color:white; border-radius:50%; min-width: 18px; padding:2px 4px; font-size:0.75rem; text-align:center; font-weight:bold;">{{CART_COUNT}}</span>
+        {{endif CART_COUNT}}
+      </a>
       <i class="fas fa-user"></i> {{~username}}
     </div>
   </div>

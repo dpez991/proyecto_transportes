@@ -9,6 +9,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{BASE_DIR}}/public/css/appstyle.css" />
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <script src="https://kit.fontawesome.com/{{FONT_AWESOME_KIT}}.js" crossorigin="anonymous"></script>
 
   {{foreach SiteLinks}}
@@ -154,11 +156,27 @@
       <span class="site-title">{{SITE_TITLE}}</span>
     </div>
 
-    <div class="header-right">
-      {{with login}}
-        <i class="fas fa-user"></i> {{userName}}
-      {{endwith login}}
-    </div>
+<div class="header-right" style="display: flex; align-items: center;">
+    <a href="index.php?page=Checkout_Checkout" 
+       style="display: flex !important; align-items: center; justify-content: center; color: #ffffff !important; text-decoration: none; margin-right: 30px; position: relative; width: 40px; height: 40px;">
+        
+        <i class="fas fa-shopping-cart" 
+           style="font-family: 'Font Awesome 5 Free' !important; font-weight: 900 !important; font-size: 22px !important; color: white !important; display: inline-block !important; visibility: visible !important;"></i>
+        
+        {{if CART_COUNT}}
+        <span style="position: absolute; top: 0px; right: -5px; background-color: #ff4757; color: white; border-radius: 50%; min-width: 18px; height: 18px; padding: 2px; font-size: 11px; text-align: center; font-weight: bold; line-height: 14px; border: 2px solid #001f3f; display: flex; align-items: center; justify-content: center; z-index: 10;">
+            {{CART_COUNT}}
+        </span>
+        {{endif CART_COUNT}}
+    </a>
+
+    {{with login}}
+    <span style="display: flex; align-items: center; gap: 8px; color: white; font-weight: bold;">
+        <i class="fas fa-user" style="font-size: 18px;"></i>
+        <span class="user-name">{{userName}}</span>
+    </span>
+    {{endwith login}}
+</div>
 
   </div>
 

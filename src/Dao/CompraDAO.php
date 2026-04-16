@@ -4,60 +4,120 @@ namespace Dao;
 
 class CompraDAO extends Table
 {
-    public static function getAll()
+    // Historial para el cliente
+    public static function obtenerHistorialUsuario($usercod)
     {
-        $sqlstr = "SELECT
-                        c.compraId,
-                        c.usercod,
-                        c.viajeId,
-                        c.cantidadAsientos,
-                        c.total,
-                        c.fechacompra,
-                        c.compraest,
-                        u.username,
-                        u.useremail,
-                        r.origen,
-                        r.destino,
-                        v.fecha,
-                        v.hora
-                   FROM compras c
-                   INNER JOIN usuario u ON c.usercod = u.usercod
-                   INNER JOIN viajes v ON c.viajeId = v.viajeId
-                   INNER JOIN rutas r ON v.rutaId = r.rutaId
-                   ORDER BY c.fechacompra DESC;";
-        return self::obtenerRegistros($sqlstr, []);
+        $sql = "SELECT 
+                c.id AS compra_id,
+                c.fecha AS fecha_compra,
+                c.total AS total_compra,
+                c.estado AS estado_compra,
+
+                IFNULL(p.metodo, 'PAYPAL') AS metodo_pago,
+                IFNULL(p.estado, 'COMPLETED') AS estado_pago,
+                IFNULL(p.paypal_order_id, 'N/A') AS transaccion_id,
+
+                d.cantidad,
+                d.precio AS precio_unitario,
+                d.tipo_asiento,
+                d.fecha AS fecha_viaje,
+
+                h.hora AS hora_salida,
+                r.origen,
+                r.destino
+
+            FROM compras c
+
+            INNER JOIN detalle_compra d 
+                ON c.id = d.compra_id
+
+            INNER JOIN horarios_viaje h 
+                ON d.horario_id = h.id
+
+            INNER JOIN rutas r 
+                ON h.ruta_id = r.id
+
+            LEFT JOIN pagos p 
+                ON p.compra_id = c.id
+
+            WHERE c.usercod = :usercod
+
+            ORDER BY c.fecha DESC";
+
+        return self::obtenerRegistros($sql, ['usercod' => $usercod]);
     }
 
-    public static function getById($compraId)
+    // Listado global para el administrador
+    public static function obtenerTodasLasCompras()
     {
-        $sqlstr = "SELECT
-                        c.compraId,
-                        c.usercod,
-                        c.viajeId,
-                        c.cantidadAsientos,
-                        c.total,
-                        c.fechacompra,
-                        c.compraest,
-                        u.username,
-                        u.useremail,
-                        r.origen,
-                        r.destino,
-                        v.fecha,
-                        v.hora,
-                        b.numeroBus,
-                        b.placa
-                   FROM compras c
-                   INNER JOIN usuario u ON c.usercod = u.usercod
-                   INNER JOIN viajes v ON c.viajeId = v.viajeId
-                   INNER JOIN rutas r ON v.rutaId = r.rutaId
-                   INNER JOIN buses b ON v.busId = b.busId
-                   WHERE c.compraId = :compraId;";
-        return self::obtenerUnRegistro($sqlstr, ["compraId" => $compraId]);
+        $sql = 'SELECT 
+                    c.id as compra_id,
+                    c.fecha as fecha_compra,
+                    c.total as total_compra,
+                    c.estado as estado_compra,
+                    u.username as usuario,
+                    p.metodo as metodo_pago,
+                    p.estado as estado_pago,
+                    p.paypal_order_id as transaccion_id
+                FROM compras c
+                INNER JOIN usuario u ON c.usercod = u.usercod
+                LEFT JOIN pagos p ON c.id = p.compra_id
+                ORDER BY c.fecha DESC;';
+
+        return self::obtenerRegistros($sql, []);
     }
 
-    public static function countAll()
+    public static function marcarComoPagado($compraId)
     {
-        $sqlstr = "SELECT COUNT(*) as total FROM compras;";
-        return self::obtenerUnRegistro($sqlstr, []);
+        $sql = "UPDATE compras 
+            SET estado = 'pagado' 
+            WHERE id = :id;";
+
+        return self::executeNonQuery($sql, [
+            'id' => $compraId,
+        ]);
+    }
+
+    public static function obtenerDetalleCompleto($compraId)
+    {
+        $sql = 'SELECT 
+                c.id AS compra_id,
+                c.fecha AS fecha_compra,
+                c.total AS total_compra,
+                c.estado AS estado_compra,
+
+                u.username,
+                u.useremail,
+
+                p.metodo,
+                p.estado AS estado_pago,
+                p.paypal_order_id,
+                p.paypal_capture_id,
+                p.payer_nombre,
+                p.payer_email,
+                p.monto,
+                p.moneda,
+                p.direccion,
+
+                d.cantidad,
+                d.precio,
+                d.tipo_asiento,
+                d.fecha AS fecha_viaje,
+
+                h.hora,
+                r.origen,
+                r.destino
+
+            FROM compras c
+
+            INNER JOIN usuario u ON c.usercod = u.usercod
+            LEFT JOIN pagos p ON p.compra_id = c.id
+            LEFT JOIN detalle_compra d ON d.compra_id = c.id
+            LEFT JOIN horarios_viaje h ON d.horario_id = h.id
+            LEFT JOIN rutas r ON h.ruta_id = r.id
+
+            WHERE c.id = :id';
+
+        return self::obtenerRegistros($sql, ['id' => $compraId]);
     }
 }

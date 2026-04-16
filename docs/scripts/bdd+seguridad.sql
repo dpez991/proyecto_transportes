@@ -127,7 +127,59 @@ FROM funciones;
 -- INSERT INTO usuario (...)
 -- INSERT INTO roles_usuarios (usercod, 'cliente', 'ACT', NOW(), ...
 
+USE nwdb;
 
+-- ========================
+-- NUEVAS FUNCIONES (MENÚS)
+-- ========================
+
+INSERT INTO funciones (fncod, fndsc, fnest, fntyp) VALUES
+('Menu_Admin_Dashboard', 'Menu Dashboard', 'ACT', 'MNU'),
+('Menu_Mantenimiento_Rutas', 'Menu Mantenimiento Rutas', 'ACT', 'MNU'),
+('Menu_Mantenimiento_Buses', 'Menu Mantenimiento Buses', 'ACT', 'MNU'),
+('Menu_Mantenimiento_Viajes', 'Menu Mantenimiento Viajes', 'ACT', 'MNU'),
+('Menu_Mantenimiento_Compras', 'Menu Gestion de Compras', 'ACT', 'MNU');
+
+-- ========================
+-- CONTROLADORES (CTR)
+-- ========================
+
+INSERT INTO funciones (fncod, fndsc, fnest, fntyp) VALUES
+('Admin_Dashboard', 'Dashboard Admin', 'ACT', 'CTR'),
+
+('Mantenimientos_Rutas_Listado', 'Listado Rutas', 'ACT', 'CTR'),
+('Mantenimientos_Rutas_Formulario', 'Formulario Rutas', 'ACT', 'CTR'),
+
+('Mantenimientos_Buses_Listado', 'Listado Buses', 'ACT', 'CTR'),
+('Mantenimientos_Buses_Formulario', 'Formulario Buses', 'ACT', 'CTR'),
+
+('Mantenimientos_Viajes_Listado', 'Listado Viajes', 'ACT', 'CTR'),
+('Mantenimientos_Viajes_Formulario', 'Formulario Viajes', 'ACT', 'CTR'),
+
+('Mantenimientos_Compras_Listado', 'Listado Compras', 'ACT', 'CTR');
+
+-- ========================
+-- PROGRAMAS (PRG)
+-- ========================
+
+INSERT INTO funciones (fncod, fndsc, fnest, fntyp) VALUES
+('Mantenimientos_Rutas_Ruta', 'CRUD Rutas', 'ACT', 'PRG'),
+('Mantenimientos_Buses_Bus', 'CRUD Buses', 'ACT', 'PRG'),
+('Mantenimientos_Viajes_Viaje', 'CRUD Viajes', 'ACT', 'PRG'),
+('Mantenimientos_Compras_Compra', 'CRUD Compras', 'ACT', 'PRG');
+
+-- ========================
+-- ASIGNAR TODO AL ADMIN
+-- ========================
+
+INSERT INTO funciones_roles (rolescod, fncod, fnrolest, fnexp)
+SELECT 'admin', fncod, 'ACT', '2030-01-01'
+FROM funciones f
+WHERE NOT EXISTS (
+    SELECT 1 FROM funciones_roles fr
+    WHERE fr.rolescod = 'admin'
+    AND fr.fncod = f.fncod
+);
 
 
 

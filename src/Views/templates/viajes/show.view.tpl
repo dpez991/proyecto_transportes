@@ -115,6 +115,15 @@
 }
 .prev { left: 10px; }
 .next { right: 10px; }
+/* igual que el tuyo + pequeño ajuste */
+.badge-disponible {
+    background: #e8f5e9;
+    color: #43a047;
+    padding: 8px 15px;
+    border-radius: 25px;
+    font-weight: 600;
+    display: inline-block;
+}
 </style>
 
 <div class="trip-detail-container">
@@ -122,9 +131,7 @@
     
     <div class="trip-card">
 
-        <!-- 🔥 CAROUSEL -->
         <div class="trip-image-col">
-
             <div class="carousel">
                 {{foreach imagenes}}
                     <img src="{{this}}" class="carousel-img">
@@ -133,7 +140,6 @@
 
             <button class="carousel-btn prev" onclick="moveSlide(-1)">❮</button>
             <button class="carousel-btn next" onclick="moveSlide(1)">❯</button>
-
         </div>
 
         <div class="trip-info-col">
@@ -143,31 +149,44 @@
             </div>
 
             <div class="trip-meta">
-                <div class="trip-meta-item">📅 {{fecha}}</div>
                 <div class="trip-meta-item">⏰ {{hora}}</div>
+
+                <!-- 🔥 NUEVO SELECTOR DE FECHA -->
                 <div class="trip-meta-item">
-                    <span class="badge-disponible">
-                        {{asientos_disponibles}} disponibles
+                    📅 <input type="date" id="fecha" class="form-control">
+                </div>
+
+                <!-- 🔥 DINÁMICO -->
+                <div class="trip-meta-item">
+                    <span id="asientosBox" class="badge-disponible">
+                        Selecciona una fecha
                     </span>
                 </div>
             </div>
 
             <div class="booking-section">
-                <div class="form-group">
-                    <label>Tipo de asiento</label>
-                    <select class="form-control">
-                        <option>Normal (L.200)</option>
-                        <option>Semi cama (L.250)</option>
-                        <option>Cama (L.350)</option>
-                    </select>
-                </div>
+                <!-- 🔥 FORMULARIO AGREGAR AL CARRITO -->
+                <form action="index.php?page=Checkout_Add" method="POST">
+                    <input type="hidden" name="horario_id" value="{{horario_id}}">
+                    <input type="hidden" id="fecha_hidden" name="fecha" value="">
+                    <input type="hidden" id="precio_hidden" name="precio_unitario" value="200">
 
-                <div class="form-group">
-                    <label>Cantidad</label>
-                    <input type="number" class="form-control" min="1" max="{{asientos_disponibles}}" value="1">
-                </div>
+                    <div class="form-group">
+                        <label>Tipo de asiento</label>
+                        <select name="tipo_asiento" id="tipo_asiento" class="form-control" onchange="document.getElementById('precio_hidden').value = this.options[this.selectedIndex].getAttribute('data-price');">
+                            <option value="Normal" data-price="200">Normal (L.200)</option>
+                            <option value="Semi cama" data-price="250">Semi cama (L.250)</option>
+                            <option value="Cama" data-price="350">Cama (L.350)</option>
+                        </select>
+                    </div>
 
-                <button class="btn-buy">Agregar al carrito</button>
+                    <div class="form-group">
+                        <label>Cantidad</label>
+                        <input id="cantidad" name="cantidad" type="number" class="form-control" min="1" value="1" required>
+                    </div>
+
+                    <button type="submit" class="btn-buy" id="btnComprar" disabled>Seleccione Fecha para Agregar</button>
+                </form>
             </div>
 
         </div>
@@ -180,12 +199,8 @@ let currentSlide = 0;
 
 function showSlide(index) {
     const slides = document.querySelectorAll('.carousel-img');
-    if (slides.length === 0) return;
-
     slides.forEach(s => s.classList.remove('active'));
-
     currentSlide = (index + slides.length) % slides.length;
-
     slides[currentSlide].classList.add('active');
 }
 
@@ -195,5 +210,51 @@ function moveSlide(step) {
 
 document.addEventListener("DOMContentLoaded", () => {
     showSlide(0);
+
+    const fechaInput = document.getElementById("fecha");
+    const box = document.getElementById("asientosBox");
+    const btnComprar = document.getElementById("btnComprar");
+    const fechaHidden = document.getElementById("fecha_hidden");
+    const cantidad = document.getElementById("cantidad");
+
+    fechaInput.addEventListener("change", async () => {
+
+        const fecha = fechaInput.value;
+        fechaHidden.value = fecha;
+
+        if (!fecha) {
+            btnComprar.disabled = true;
+            btnComprar.innerHTML = "Seleccione Fecha para Agregar";
+            box.innerHTML = "Selecciona una fecha";
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("horario_id", "{{horario_id}}");
+        formData.append("fecha", fecha);
+
+        const res = await fetch("index.php?page=Viajes_Show&id=0", {
+            method: "POST",
+            body: formData
+        });
+
+        const data = await res.json();
+
+        if (data.success && data.asientos > 0) {
+            box.innerHTML = data.asientos + " disponibles";
+            box.style.color = "#43a047";
+            box.style.background = "#e8f5e9";
+            cantidad.max = data.asientos;
+            btnComprar.disabled = false;
+            btnComprar.innerHTML = "Agregar al carrito";
+        } else {
+            box.innerHTML = "No disponible o agotado";
+            box.style.color = "#d32f2f";
+            box.style.background = "#ffebee";
+            btnComprar.disabled = true;
+            btnComprar.innerHTML = "Agotado";
+            cantidad.max = 0;
+        }
+    });
 });
 </script>
