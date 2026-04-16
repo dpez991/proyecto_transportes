@@ -125,4 +125,75 @@ FROM funciones;
 -- ========================
 
 -- INSERT INTO usuario (...)
--- INSERT INTO roles_usuarios (usercod, 'cliente', 'ACT', NOW(), ...)
+-- INSERT INTO roles_usuarios (usercod, 'cliente', 'ACT', NOW(), ...
+
+
+
+
+
+--================================================================================
+--tablas para panel ADMINISTRADOR
+--================================================================================
+
+--Aca estan incluidas las tablas de rutas y viajes que se necesitan para el panel de administrador, 
+--pero tambien para el cliente, por lo que se incluyen aqui para evitar problemas de integridad 
+--referencial al momento de crear las tablas de viajes y rutas, ya que estas son necesarias para la 
+--tabla de compras que se 
+--relaciona con la tabla de usuario.
+--
+USE nwdb;
+
+CREATE TABLE `rutas` (
+    `rutaId` int(11) NOT NULL AUTO_INCREMENT,
+    `origen` varchar(100) NOT NULL,
+    `destino` varchar(100) NOT NULL,
+    `estado` char(3) NOT NULL DEFAULT 'ACT',
+    PRIMARY KEY (`rutaId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `buses` (
+    `busId` int(12) NOT NULL AUTO_INCREMENT,
+    `numeroBus` varchar(50) NOT NULL,
+    `placa` varchar(20) NOT NULL,
+    `capacidad` int NOT NULL DEFAULT 45,
+    `busest` char(3) NOT NULL DEFAULT 'ACT',
+    PRIMARY KEY (`busId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `viajes` (
+    `viajeId` int(12) NOT NULL AUTO_INCREMENT,
+    `rutaId` int(12) NOT NULL,
+    `busId` int(12) DEFAULT NULL,
+    `fecha` date NOT NULL,
+    `hora` time NOT NULL,
+    `asientosDisponibles` int NOT NULL,
+    `estado` char(3) NOT NULL DEFAULT 'ACT',
+    PRIMARY KEY (`viajeId`),
+    KEY `ruta_idx` (`rutaId`),
+    KEY `bus_idx` (`busId`),
+    CONSTRAINT `viaje_ruta_fk`
+        FOREIGN KEY (`rutaId`)
+        REFERENCES `rutas` (`rutaId`),
+    CONSTRAINT `viaje_bus_fk`
+        FOREIGN KEY (`busId`)
+        REFERENCES `buses` (`busId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `compras` (
+    `compraId` int NOT NULL AUTO_INCREMENT,
+    `usercod` bigint NOT NULL,
+    `viajeId` int(12) NOT NULL,
+    `cantidadAsientos` int NOT NULL DEFAULT 1,
+    `total` decimal(10,2) NOT NULL,
+    `fechacompra` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `compraest` char(3) NOT NULL DEFAULT 'ACT',
+    PRIMARY KEY (`compraId`),
+    KEY `compras_usuario_idx` (`usercod`),
+    KEY `compras_viaje_idx` (`viajeId`),
+    CONSTRAINT `compras_usuario_fk`
+        FOREIGN KEY (`usercod`)
+        REFERENCES `usuario` (`usercod`),
+    CONSTRAINT `compras_viaje_fk`
+        FOREIGN KEY (`viajeId`)
+        REFERENCES `viajes` (`viajeId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
