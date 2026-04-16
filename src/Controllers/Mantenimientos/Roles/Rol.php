@@ -45,11 +45,9 @@ class Rol extends PrivateController
                     Site::redirectTo('index.php?page=Mantenimientos_Roles_Listado');
                 }
             } elseif ($this->mode === 'DEL') {
-                // Validación estricta: NO se puede borrar "cliente"
                 if (strtolower($this->rolescod) === 'cliente') {
                     Site::redirectToWithMsg('index.php?page=Mantenimientos_Roles_Listado', 'El rol cliente es obligatorio y no puede ser eliminado');
                 }
-                // Validación: Rol en uso
                 if (Security::isRolInUse($this->rolescod)) {
                     Site::redirectToWithMsg('index.php?page=Mantenimientos_Roles_Listado', 'No se puede eliminar el rol porque está asignado a uno o más usuarios.');
                 }

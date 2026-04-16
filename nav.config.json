@@ -1,19 +1,19 @@
 {
   "public": [
     {
-      "id": "Menu_Home",
-      "nav_url": "index.php?page=Home",
-      "nav_label": "<i class=\"fas fa-home\"></i>&nbsp;Inicio"
-    },
-    {
       "id": "Menu_About",
-      "nav_url": "index.php?page=About",
-      "nav_label": "Empresa"
+      "nav_url": "index.php?page=Public_Home&mode=about",
+      "nav_label": "<i class=\"fas fa-info-circle\"></i>&nbsp;Sobre Nosotros"
     },
     {
       "id": "Menu_Contact",
-      "nav_url": "index.php?page=Contact",
-      "nav_label": "Contacto"
+      "nav_url": "index.php?page=Public_Home&mode=contact",
+      "nav_label": "<i class=\"fas fa-envelope\"></i>&nbsp;Contacto"
+    },
+    {
+      "id": "Menu_Viajes",
+      "nav_url": "index.php?page=Viajes_Index",
+      "nav_label": "<i class=\"fas fa-bus\"></i>&nbsp;Viajes"
     },
     {
       "id": "Menu_SignIn",

@@ -7,20 +7,6 @@ if (version_compare(phpversion(), '7.4.0', '<')) {
 } else {
     define('PASSWORD_ALGORITHM', '2y');  // BCRYPT
 }
-/*
-usercod     bigint(10) AI PK
-useremail   varchar(80)
-username    varchar(80)
-userpswd    varchar(128)
-userfching  datetime
-userpswdest char(3)
-userpswdexp datetime
-userest     char(3)
-useractcod  varchar(128)
-userpswdchg varchar(128)
-usertipo    char(3)
-
- */
 
 class Security extends \Dao\Table
 {
@@ -30,7 +16,6 @@ class Security extends \Dao\Table
         if ($filter == '' && $page == -1 && $items == 0) {
             $sqlstr = 'SELECT * FROM usuario;';
         } else {
-            // TODO: Terminar consultas FACET
             if ($page == -1 && $items == 0) {
                 $sqlstr = sprintf('SELECT * FROM usuarios %s;', $filter);
             } else {
@@ -57,7 +42,6 @@ class Security extends \Dao\Table
         }
 
         $newUser = self::_usuarioStruct();
-        // Tratamiento de la Contraseña
         $hashedPassword = self::_hashPassword($password);
 
         unset($newUser['usercod']);
@@ -82,8 +66,6 @@ class Security extends \Dao\Table
         now(), :usertipo);';
 
         $result = self::executeNonQuery($sqlIns, $newUser);
-
-        // 🔥 SOLO ESTO SE AGREGA (SIN CAMBIAR NADA MÁS)
 
         if ($result) {
             $usuario = self::getUsuarioByEmail($email);
@@ -387,11 +369,9 @@ class Security extends \Dao\Table
 
     public static function deleteRolDependencies($rolescod)
     {
-        // eliminar funciones asociadas
         $sql1 = 'DELETE FROM funciones_roles WHERE rolescod = :rolescod;';
         self::executeNonQuery($sql1, ['rolescod' => $rolescod]);
 
-        // eliminar relaciones con usuarios (por seguridad extra)
         $sql2 = 'DELETE FROM roles_usuarios WHERE rolescod = :rolescod;';
         self::executeNonQuery($sql2, ['rolescod' => $rolescod]);
     }

@@ -4,35 +4,33 @@ namespace Dao;
 
 class Viajes extends Table
 {
-    public static function getAll()
+    public static function obtenerViajesDisponibles()
     {
-        $sqlstr = "SELECT 
-                        v.viajeId,
-                        r.origen,
-                        r.destino,
-                        v.fecha,
-                        v.hora,
-                        v.asientosDisponibles
-                   FROM viajes v
-                   INNER JOIN rutas r ON v.rutaId = r.rutaId
-                   WHERE v.asientosDisponibles > 0";
-
+        $sqlstr = "SELECT
+            v.id,
+            r.origen,
+            r.destino,
+            v.fecha,
+            v.hora,
+            v.asientos_disponibles
+            FROM viajes v
+            INNER JOIN rutas r ON v.ruta_id = r.id
+            WHERE v.asientos_disponibles > 0;";
         return self::obtenerRegistros($sqlstr, []);
     }
 
-    public static function getById($id)
+    public static function obtenerViajePorId($id)
     {
-        $sqlstr = "SELECT 
-                        v.viajeId,
-                        r.origen,
-                        r.destino,
-                        v.fecha,
-                        v.hora,
-                        v.asientosDisponibles
-                   FROM viajes v
-                   INNER JOIN rutas r ON v.rutaId = r.rutaId
-                   WHERE v.viajeId = :id";
-
-        return self::obtenerUnRegistro($sqlstr, ["id" => $id]);
+        $sqlstr = "SELECT
+            v.id,
+            r.origen,
+            r.destino,
+            v.fecha,
+            v.hora,
+            v.asientos_disponibles
+            FROM viajes v
+            INNER JOIN rutas r ON v.ruta_id = r.id
+            WHERE v.id = :id AND v.asientos_disponibles > 0;";
+        return self::obtenerUnRegistro($sqlstr, ['id' => $id]);
     }
 }
