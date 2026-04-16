@@ -1,36 +1,76 @@
 {
   "public": [
     {
+      "id": "Menu_Home",
+      "nav_url": "index.php?page=Home",
+      "nav_label": "<i class=\"fas fa-home\"></i>&nbsp;Inicio"
+    },
+    {
+      "id": "Menu_About",
+      "nav_url": "index.php?page=About",
+      "nav_label": "Empresa"
+    },
+    {
+      "id": "Menu_Contact",
+      "nav_url": "index.php?page=Contact",
+      "nav_label": "Contacto"
+    },
+    {
       "id": "Menu_SignIn",
       "nav_url": "index.php?page=Sec_Login",
-      "nav_label":"<i class=\"fas fa-sign-in-alt\"></i>&nbsp;Iniciar Sesión"
+      "nav_label": "<i class=\"fas fa-sign-in-alt\"></i>&nbsp;Iniciar Sesión"
     },
-     {
+    {
       "id": "Menu_SignUp",
       "nav_url": "index.php?page=Sec_Register",
-      "nav_label":"<i class=\"fas fa-sign-in-alt\"></i>&nbsp;Crear Cuenta"
+      "nav_label": "<i class=\"fas fa-user-plus\"></i>&nbsp;Crear Cuenta"
     }
   ],
   "private": [
-    {
-      "id":"Menu_PaymentCheckout",
-      "nav_url": "index.php?page=Checkout_Checkout",
-      "nav_label": "Carretilla de Compra"
-    },
-    {
-      "id":"Menu_Mantenimiento_Libros",
-      "nav_url": "index.php?page=Mantenimientos_Libros_Listado",
-      "nav_label": "Mantenimiento de Libros"
-    },
-    {
-      "id":"Menu_Mantenimiento_Usuarios",
-      "nav_url": "index.php?page=Mantenimientos_Usuarios_Listado",
-      "nav_label": "Mantenimiento de Usuarios"
-    },
-    {
-      "id":"Menu_Mantenimiento_Roles",
-      "nav_url": "index.php?page=Mantenimientos_Roles_Listado",
-      "nav_label": "Mantenimiento de Roles"
-    }
+  {
+    "id": "Menu_Admin_Dashboard",
+    "nav_url": "index.php?page=Admin_Dashboard",
+    "nav_label": "Dashboard"
+  },
+  {
+    "id": "Menu_Mantenimiento_Rutas",
+    "nav_url": "index.php?page=Mantenimientos_Rutas_Listado",
+    "nav_label": "Mantenimiento de Rutas"
+  },
+  {
+    "id": "Menu_Mantenimiento_Buses",
+    "nav_url": "index.php?page=Mantenimientos_Buses_Listado",
+    "nav_label": "Mantenimiento de Buses"
+  },
+  {
+    "id": "Menu_Mantenimiento_Viajes",
+    "nav_url": "index.php?page=Mantenimientos_Viajes_Listado",
+    "nav_label": "Mantenimiento de Viajes"
+  },
+  {
+    "id": "Menu_Mantenimiento_Compras",
+    "nav_url": "index.php?page=Mantenimientos_Compras_Listado",
+    "nav_label": "Gestión de Compras"
+  },
+  {
+    "id":"Menu_PaymentCheckout",
+    "nav_url": "index.php?page=Checkout_Checkout",
+    "nav_label": "Carretilla de Compra"
+  },
+  {
+    "id":"Menu_Mantenimiento_Libros",
+    "nav_url": "index.php?page=Mantenimientos_Libros_Listado",
+    "nav_label": "Mantenimiento de Libros"
+  },
+  {
+    "id":"Menu_Mantenimiento_Usuarios",
+    "nav_url": "index.php?page=Mantenimientos_Usuarios_Listado",
+    "nav_label": "Mantenimiento de Usuarios"
+  },
+  {
+    "id":"Menu_Mantenimiento_Roles",
+    "nav_url": "index.php?page=Mantenimientos_Roles_Listado",
+    "nav_label": "Mantenimiento de Roles"
+  }
   ]
 }
